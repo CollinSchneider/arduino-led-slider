@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Lights!</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Acme' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/styles.css" media="screen" title="no title" charset="utf-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.js" charset="utf-8"></script>
+    <script src="/scripts.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <h1>Lights <i class="fa fa-lightbulb-o"></i></h1>
+    <div class="input-div">
+      <h3 id = "red-header">Red</h3>
+      <input type="range" id="red" class = "slider" value="127" min="0" max="255">
+      <h3 id = "green-header">Green</h3>
+      <input type="range" id="green" class = "slider" value="127" min="0" max="255">
+      <h3 id = "blue-header">Blue</h3>
+      <input type="range" id="blue" class = "slider" value="127" min="0" max="255">
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.js"></script>
+    <script>
+    var socket = io();
+    socket.on('connection', function(message){
+      console.log(message);
+    })
+    function componentToHex(c) {
+      var hex = c.toString(16);
+      return hex.length == 1 ? "0" + hex : hex;
+    }
+    function rgbToHex(r, g, b) {
+      return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b)
+    }
+    $('body').mousemove(function(){
+      var redVal = parseInt($('#red').val());
+      var blueVal = parseInt($('#blue').val());
+      var greenVal = parseInt($('#green').val());
+      var hex = rgbToHex(redVal, greenVal, blueVal);
+      socket.emit('sliders', rgbToHex(redVal, greenVal, blueVal));
+      $('body').css({
+        background: hex
+      })
+    })
+    </script>
+
+  </body>
+</html>
